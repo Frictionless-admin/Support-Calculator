@@ -4,322 +4,314 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Frictionless Admin – Pricing Calculator</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
   :root {
-    --cream: #F8F4EE;
-    --dark: #1A1A18;
-    --gold: #C9A84C;
-    --gold-light: #E8C97A;
-    --mid: #4A4A42;
-    --border: #D9D2C5;
+    --dark:   #2e2e2e;
+    --mid:    #525252;
+    --grey:   #6c6c6c;
+    --light:  #858585;
+    --pale:   #9f9f9f;
+    --border: #e6e6e6;
+    --bg:     #f5f5f5;
+    --white:  #ffffff;
   }
-
   body {
-    background: var(--cream);
-    color: var(--dark);
-    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    font-family: 'Barlow', sans-serif;
     min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 2rem;
   }
-
   .card {
-    background: #fff;
+    background: var(--white);
     border: 1px solid var(--border);
-    border-radius: 2px;
-    max-width: 580px;
+    max-width: 560px;
     width: 100%;
-    overflow: hidden;
-    box-shadow: 0 8px 48px rgba(0,0,0,0.08);
+    box-shadow: 0 4px 32px rgba(0,0,0,0.07);
   }
-
   .header {
     background: var(--dark);
-    padding: 2.5rem 2.5rem 2rem;
-    position: relative;
-    overflow: hidden;
+    padding: 2rem 2.5rem 1.75rem;
   }
-
-  .header::after {
-    content: '';
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, var(--gold), var(--gold-light), var(--gold));
-  }
-
-  .logo {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.5rem;
-    color: #fff;
-    letter-spacing: -0.02em;
-    margin-bottom: 0.25rem;
-  }
-
-  .logo span { color: var(--gold-light); }
-
-  .tagline {
-    font-size: 0.8rem;
-    color: #888;
-    font-weight: 300;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
-
-  .body {
-    padding: 2.5rem;
-  }
-
-  label {
+  .logo-wrap { margin-bottom: 1.25rem; }
+  .logo-wrap img {
+    filter: brightness(0) invert(1);
+    height: 30px;
+    width: auto;
     display: block;
-    font-size: 0.8rem;
-    font-weight: 500;
-    letter-spacing: 0.06em;
+  }
+  .header-sub {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
-    color: var(--mid);
-    margin-bottom: 0.75rem;
+    color: var(--pale);
+    border-top: 1px solid #3e3e3e;
+    padding-top: 1rem;
   }
-
-  .input-wrap {
-    position: relative;
-    margin-bottom: 2rem;
-  }
-
-  input[type=number] {
-    width: 100%;
-    padding: 1rem 1.25rem;
-    font-size: 2rem;
-    font-family: 'Playfair Display', serif;
+  .body { padding: 2.5rem; }
+  .field-label {
+    display: block;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.7rem;
     font-weight: 700;
-    border: 2px solid var(--border);
-    border-radius: 2px;
-    background: var(--cream);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--light);
+    margin-bottom: 0.6rem;
+  }
+  .number-input-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+  }
+  input[type=number] {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 2.4rem;
+    font-weight: 700;
     color: var(--dark);
+    background: var(--bg);
+    border: 2px solid var(--border);
     outline: none;
     transition: border-color 0.2s;
     -moz-appearance: textfield;
+    line-height: 1;
   }
-
   input[type=number]::-webkit-outer-spin-button,
   input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; }
-
-  input[type=number]:focus { border-color: var(--gold); }
-
-  .slider-wrap { margin-bottom: 2rem; }
-
+  input[type=number]:focus { border-color: var(--grey); }
+  .btn-group { display: flex; flex-direction: column; gap: 0.3rem; }
+  .stepper {
+    width: 36px; height: 36px;
+    border: 1px solid var(--border);
+    background: var(--white);
+    color: var(--mid);
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s, color 0.15s;
+    user-select: none;
+  }
+  .stepper:hover { background: var(--dark); color: var(--white); border-color: var(--dark); }
+  .slider-wrap { margin-bottom: 1.75rem; }
   input[type=range] {
     width: 100%;
-    height: 4px;
+    height: 3px;
     appearance: none;
+    -webkit-appearance: none;
     background: var(--border);
-    border-radius: 2px;
     outline: none;
     cursor: pointer;
   }
-
   input[type=range]::-webkit-slider-thumb {
-    appearance: none;
-    width: 20px; height: 20px;
-    border-radius: 50%;
-    background: var(--gold);
+    -webkit-appearance: none;
+    width: 18px; height: 18px;
+    background: var(--dark);
     cursor: pointer;
-    box-shadow: 0 2px 8px rgba(201,168,76,0.4);
+    border: 3px solid var(--white);
+    box-shadow: 0 0 0 1px var(--grey);
+    border-radius: 50%;
     transition: transform 0.15s;
   }
-
   input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.2); }
-
-  .tier-pills {
+  .slider-labels {
     display: flex;
-    gap: 0.5rem;
+    justify-content: space-between;
+    margin-top: 0.5rem;
+    font-size: 0.68rem;
+    color: var(--pale);
+    font-family: 'Barlow Condensed', sans-serif;
+    letter-spacing: 0.06em;
+  }
+  .tier-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.4rem;
     margin-bottom: 2rem;
-    flex-wrap: wrap;
   }
-
   .tier-pill {
-    flex: 1;
-    min-width: 0;
-    padding: 0.5rem 0.75rem;
-    border-radius: 2px;
-    font-size: 0.72rem;
-    font-weight: 500;
-    text-align: center;
-    transition: all 0.3s;
+    padding: 0.6rem 0.4rem;
     border: 1px solid var(--border);
-    color: #aaa;
     background: transparent;
+    text-align: center;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: var(--pale);
+    transition: all 0.25s;
+    cursor: default;
+    line-height: 1.3;
   }
-
+  .tier-pill .range {
+    display: block;
+    font-weight: 400;
+    font-size: 0.62rem;
+    margin-top: 3px;
+    opacity: 0.75;
+  }
   .tier-pill.active {
     background: var(--dark);
     border-color: var(--dark);
-    color: var(--gold-light);
-    font-weight: 700;
+    color: var(--white);
   }
-
-  .tier-pill .range { display: block; font-weight: 300; font-size: 0.65rem; opacity: 0.7; margin-top: 2px; }
-
   .divider { border: none; border-top: 1px solid var(--border); margin-bottom: 2rem; }
-
   .results {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
   }
-
   .result-box {
-    background: var(--cream);
     border: 1px solid var(--border);
-    border-radius: 2px;
     padding: 1.25rem;
     text-align: center;
-    transition: all 0.3s;
+    background: var(--bg);
   }
-
-  .result-box.highlight {
-    background: var(--dark);
-    border-color: var(--dark);
-  }
-
+  .result-box.primary { background: var(--dark); border-color: var(--dark); }
   .result-label {
-    font-size: 0.7rem;
-    font-weight: 500;
-    letter-spacing: 0.08em;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
     text-transform: uppercase;
-    color: var(--mid);
+    color: var(--light);
     margin-bottom: 0.5rem;
   }
-
-  .result-box.highlight .result-label { color: #888; }
-
+  .result-box.primary .result-label { color: var(--pale); }
   .result-value {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.8rem;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 2rem;
     font-weight: 700;
     color: var(--dark);
     line-height: 1;
   }
-
-  .result-box.highlight .result-value { color: var(--gold-light); }
-
+  .result-box.primary .result-value { color: var(--white); }
   .result-sub {
-    font-size: 0.7rem;
-    color: #aaa;
-    margin-top: 0.25rem;
+    font-size: 0.68rem;
+    color: var(--pale);
+    margin-top: 0.3rem;
+    font-family: 'Barlow Condensed', sans-serif;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
   }
-
-  .tier-breakdown {
-    background: var(--cream);
+  .breakdown {
     border: 1px solid var(--border);
-    border-radius: 2px;
     padding: 1.25rem;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.25rem;
+    background: var(--bg);
     display: none;
   }
-
-  .tier-breakdown.visible { display: block; }
-
-  .tier-breakdown h4 {
-    font-size: 0.72rem;
+  .breakdown.visible { display: block; }
+  .breakdown-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--mid);
+    color: var(--light);
     margin-bottom: 0.75rem;
-    font-weight: 500;
   }
-
-  .tier-row {
+  .bd-row {
     display: flex;
     justify-content: space-between;
-    font-size: 0.82rem;
-    padding: 0.3rem 0;
+    align-items: center;
+    padding: 0.35rem 0;
     border-bottom: 1px solid var(--border);
-    color: var(--mid);
-  }
-
-  .tier-row:last-child { border-bottom: none; }
-  .tier-row .tier-cost { font-weight: 500; color: var(--dark); }
-
-  .bespoke-note {
-    background: #FFF8E8;
-    border: 1px solid var(--gold);
-    border-radius: 2px;
-    padding: 1rem 1.25rem;
     font-size: 0.82rem;
     color: var(--mid);
-    display: none;
-    text-align: center;
   }
-
-  .bespoke-note strong { color: var(--gold); }
-
+  .bd-row:last-child { border-bottom: none; }
+  .bd-cost { font-family: 'Barlow Condensed', sans-serif; font-weight: 600; font-size: 0.9rem; color: var(--dark); }
+  .bespoke-note {
+    border: 1px solid var(--dark);
+    background: var(--dark);
+    color: var(--white);
+    padding: 1.5rem;
+    text-align: center;
+    margin-bottom: 1.25rem;
+    display: none;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.95rem;
+    letter-spacing: 0.04em;
+    line-height: 1.6;
+  }
+  .bespoke-note strong { font-weight: 700; font-size: 1.1rem; display: block; margin-bottom: 0.25rem; }
   .footer-note {
     font-size: 0.72rem;
-    color: #aaa;
+    color: var(--pale);
+    line-height: 1.65;
     text-align: center;
-    line-height: 1.6;
   }
 </style>
 </head>
 <body>
-
 <div class="card">
   <div class="header">
-    <div class="logo">Frictionless <span>Admin</span></div>
-    <div class="tagline">Monthly Retainer Calculator</div>
-  </div>
-
-  <div class="body">
-    <div class="input-wrap">
-      <label for="clientCount">Number of Clients</label>
-      <input type="number" id="clientCount" min="1" max="500" value="50" oninput="syncSlider(); calculate()">
+    <div class="logo-wrap">
+      <img id="logo-img" alt="Frictionless Admin" src="data:image/png;base64,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" onerror="this.style.display='none';document.getElementById('logo-fallback').style.display='block'">
+      <div id="logo-fallback" style="display:none; font-family:'Barlow Condensed',sans-serif; font-size:1.4rem; font-weight:700; color:#fff; letter-spacing:0.1em; text-transform:uppercase;">FRICTIONLESS ADMIN</div>
     </div>
-
+    <div class="header-sub">Monthly Retainer Calculator &nbsp;·&nbsp; All prices inc. VAT</div>
+  </div>
+  <div class="body">
+    <label class="field-label" for="clientCount">Number of Clients</label>
+    <div class="number-input-row">
+      <input type="number" id="clientCount" min="1" max="999" value="50" oninput="syncSlider(); calculate()">
+      <div class="btn-group">
+        <button class="stepper" onclick="step(1)">&#9650;</button>
+        <button class="stepper" onclick="step(-1)">&#9660;</button>
+      </div>
+    </div>
     <div class="slider-wrap">
       <input type="range" id="clientSlider" min="1" max="300" value="50" oninput="syncInput(); calculate()">
+      <div class="slider-labels">
+        <span>1</span><span>100</span><span>200</span><span>300+</span>
+      </div>
     </div>
-
-    <div class="tier-pills">
-      <div class="tier-pill active" id="pill-1">£7/client<span class="range">1–100</span></div>
-      <div class="tier-pill" id="pill-2">£6.50/client<span class="range">101–200</span></div>
-      <div class="tier-pill" id="pill-3">£6/client<span class="range">201–300</span></div>
-      <div class="tier-pill" id="pill-4">Bespoke<span class="range">300+</span></div>
+    <div class="tier-row">
+      <div class="tier-pill active" id="pill-1">£7.00<span class="range">1–100 clients</span></div>
+      <div class="tier-pill" id="pill-2">£6.50<span class="range">101–200 clients</span></div>
+      <div class="tier-pill" id="pill-3">£6.00<span class="range">201–300 clients</span></div>
+      <div class="tier-pill" id="pill-4">Bespoke<span class="range">300+ clients</span></div>
     </div>
-
     <hr class="divider">
-
-    <div class="results" id="results">
+    <div class="results" id="results-grid">
       <div class="result-box">
         <div class="result-label">Per Month</div>
         <div class="result-value" id="monthly">£350</div>
-        <div class="result-sub">inc. VAT</div>
+        <div class="result-sub">Inc. VAT</div>
       </div>
-      <div class="result-box highlight">
+      <div class="result-box primary">
         <div class="result-label">Per Year</div>
         <div class="result-value" id="annual">£4,200</div>
-        <div class="result-sub">inc. VAT</div>
+        <div class="result-sub">Inc. VAT</div>
       </div>
     </div>
-
-    <div class="tier-breakdown" id="breakdown">
-      <h4>Tier Breakdown</h4>
-      <div id="breakdown-rows"></div>
+    <div class="breakdown" id="breakdown">
+      <div class="breakdown-title">Tier Breakdown</div>
+      <div id="bd-rows"></div>
     </div>
-
     <div class="bespoke-note" id="bespoke-note">
-      <strong>300+ clients?</strong> Your practice deserves a tailored conversation. <br>Get in touch for a bespoke quote.
+      <strong>300+ Clients</strong>
+      Your practice size deserves a tailored conversation.<br>Get in touch for a bespoke retainer quote.
     </div>
-
-    <p class="footer-note">Prices are tiered — each band is charged at its own rate, giving you a fair price at any practice size. All prices include VAT.</p>
+    <p class="footer-note">
+      Pricing is tiered — each band is charged at its own rate, so costs scale fairly at every practice size.<br>
+      Retainers are reviewed annually and only increase if your client bank grows.
+    </p>
   </div>
 </div>
-
 <script>
   const TIERS = [
     { min: 1,   max: 100, rate: 7.00 },
@@ -327,67 +319,58 @@
     { min: 201, max: 300, rate: 6.00 },
   ];
 
+  function step(d) {
+    const el = document.getElementById('clientCount');
+    el.value = Math.max(1, (parseInt(el.value) || 0) + d);
+    syncSlider(); calculate();
+  }
   function syncSlider() {
     const v = parseInt(document.getElementById('clientCount').value) || 1;
     document.getElementById('clientSlider').value = Math.min(v, 300);
   }
-
   function syncInput() {
     document.getElementById('clientCount').value = document.getElementById('clientSlider').value;
   }
+  function fmt(n) { return '£' + Math.round(n).toLocaleString('en-GB'); }
 
   function calculate() {
     const n = parseInt(document.getElementById('clientCount').value) || 0;
     const bespoke = n > 300;
 
-    // Update pills
-    ['pill-1','pill-2','pill-3','pill-4'].forEach((id, i) => {
-      document.getElementById(id).classList.remove('active');
-    });
-    if (n <= 100) document.getElementById('pill-1').classList.add('active');
+    ['pill-1','pill-2','pill-3','pill-4'].forEach(id => document.getElementById(id).classList.remove('active'));
+    if      (n <= 100) document.getElementById('pill-1').classList.add('active');
     else if (n <= 200) document.getElementById('pill-2').classList.add('active');
     else if (n <= 300) document.getElementById('pill-3').classList.add('active');
-    else document.getElementById('pill-4').classList.add('active');
+    else               document.getElementById('pill-4').classList.add('active');
 
-    // Show/hide bespoke
     document.getElementById('bespoke-note').style.display = bespoke ? 'block' : 'none';
-    document.getElementById('results').style.display = bespoke ? 'none' : 'grid';
+    document.getElementById('results-grid').style.display = bespoke ? 'none' : 'grid';
 
-    if (bespoke) {
-      document.getElementById('breakdown').classList.remove('visible');
-      return;
-    }
+    if (bespoke) { document.getElementById('breakdown').classList.remove('visible'); return; }
 
-    // Calculate with tiers
-    let total = 0;
-    let rows = [];
-    let remaining = n;
-
-    for (const tier of TIERS) {
+    let total = 0, rows = [], remaining = n;
+    for (const t of TIERS) {
       if (remaining <= 0) break;
-      const inTier = Math.min(remaining, tier.max - tier.min + 1);
-      const cost = inTier * tier.rate;
+      const inTier = Math.min(remaining, t.max - t.min + 1);
+      const cost = inTier * t.rate;
       total += cost;
-      rows.push({ label: `${tier.min}–${Math.min(n, tier.max)} clients × £${tier.rate}`, count: inTier, cost });
+      rows.push({ label: t.min + '\u2013' + Math.min(n, t.max) + ' clients \u00d7 \u00a3' + t.rate.toFixed(2) + '/client', cost });
       remaining -= inTier;
     }
 
-    const annual = total * 12;
+    document.getElementById('monthly').textContent = fmt(total);
+    document.getElementById('annual').textContent  = fmt(total * 12);
 
-    document.getElementById('monthly').textContent = '£' + total.toLocaleString('en-GB', {minimumFractionDigits: 0, maximumFractionDigits: 0});
-    document.getElementById('annual').textContent = '£' + annual.toLocaleString('en-GB', {minimumFractionDigits: 0, maximumFractionDigits: 0});
-
-    // Show breakdown only if multiple tiers apply
     const bd = document.getElementById('breakdown');
     if (rows.length > 1) {
       bd.classList.add('visible');
-      document.getElementById('breakdown-rows').innerHTML = rows.map(r =>
-        `<div class="tier-row"><span>${r.label}</span><span class="tier-cost">£${r.cost.toLocaleString('en-GB', {minimumFractionDigits: 2, maximumFractionDigits: 2})}/mo</span></div>`
+      document.getElementById('bd-rows').innerHTML = rows.map(r =>
+        '<div class="bd-row"><span>' + r.label + '</span><span class="bd-cost">' + fmt(r.cost) + '/mo</span></div>'
       ).join('');
-    } else {
-      bd.classList.remove('visible');
-    }
+    } else { bd.classList.remove('visible'); }
   }
+
+  // Logo already embedded via src attribute
 
   calculate();
 </script>
