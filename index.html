@@ -290,14 +290,14 @@
   <div class="body">
     <label class="field-label" for="clientCount">Number of Clients</label>
     <div class="number-input-row">
-      <input type="number" id="clientCount" min="1" max="999" value="50" oninput="syncSlider(); calculate()">
+      <input type="number" id="clientCount" min="1" max="999" value="50">
       <div class="btn-group">
-        <button class="stepper" onclick="step(1)">&#9650;</button>
-        <button class="stepper" onclick="step(-1)">&#9660;</button>
+        <button class="stepper" id="btn-up">&#9650;</button>
+        <button class="stepper" id="btn-down">&#9660;</button>
       </div>
     </div>
     <div class="slider-wrap">
-      <input type="range" id="clientSlider" min="1" max="300" value="50" oninput="syncInput(); calculate()" onchange="syncInput(); calculate()">
+      <input type="range" id="clientSlider" min="1" max="300" value="50">
       <div class="slider-labels">
         <span>1</span><span>100</span><span>200</span><span>300+</span>
       </div>
@@ -342,25 +342,17 @@
     { min: 201, max: 300, rate: 6.00 },
   ];
 
-  function step(d) {
-    const el = document.getElementById('clientCount');
-    el.value = Math.max(1, (parseInt(el.value) || 0) + d);
-    syncSlider(); calculate();
-  }
-  function syncSlider() {
-    const v = parseInt(document.getElementById('clientCount').value) || 1;
-    document.getElementById('clientSlider').value = Math.min(v, 300);
-  }
-  function syncInput() {
-    document.getElementById('clientCount').value = document.getElementById('clientSlider').value;
-  }
   function fmt(n) { return '£' + Math.round(n).toLocaleString('en-GB'); }
 
   function calculate() {
-    const n = parseInt(document.getElementById('clientCount').value) || 0;
-    const bespoke = n > 300;
+    var countEl  = document.getElementById('clientCount');
+    var sliderEl = document.getElementById('clientSlider');
+    var n = parseInt(countEl.value) || 0;
+    var bespoke = n > 300;
 
-    ['pill-1','pill-2','pill-3','pill-4'].forEach(id => document.getElementById(id).classList.remove('active'));
+    ['pill-1','pill-2','pill-3','pill-4'].forEach(function(id) {
+      document.getElementById(id).classList.remove('active');
+    });
     if      (n <= 100) document.getElementById('pill-1').classList.add('active');
     else if (n <= 200) document.getElementById('pill-2').classList.add('active');
     else if (n <= 300) document.getElementById('pill-3').classList.add('active');
@@ -371,31 +363,68 @@
 
     if (bespoke) { document.getElementById('breakdown').classList.remove('visible'); return; }
 
-    let total = 0, rows = [], remaining = n;
-    for (const t of TIERS) {
+    var total = 0, rows = [], remaining = n;
+    for (var i = 0; i < TIERS.length; i++) {
+      var t = TIERS[i];
       if (remaining <= 0) break;
-      const inTier = Math.min(remaining, t.max - t.min + 1);
-      const cost = inTier * t.rate;
+      var inTier = Math.min(remaining, t.max - t.min + 1);
+      var cost = inTier * t.rate;
       total += cost;
-      rows.push({ label: t.min + '\u2013' + Math.min(n, t.max) + ' clients \u00d7 \u00a3' + t.rate.toFixed(2) + '/client', cost });
+      rows.push({ label: t.min + '–' + Math.min(n, t.max) + ' clients × £' + t.rate.toFixed(2) + '/client', cost: cost });
       remaining -= inTier;
     }
 
     document.getElementById('monthly').textContent = fmt(total);
     document.getElementById('annual').textContent  = fmt(total * 12);
 
-    const bd = document.getElementById('breakdown');
+    var bd = document.getElementById('breakdown');
     if (rows.length > 1) {
       bd.classList.add('visible');
-      document.getElementById('bd-rows').innerHTML = rows.map(r =>
-        '<div class="bd-row"><span>' + r.label + '</span><span class="bd-cost">' + fmt(r.cost) + '/mo</span></div>'
-      ).join('');
-    } else { bd.classList.remove('visible'); }
+      document.getElementById('bd-rows').innerHTML = rows.map(function(r) {
+        return '<div class="bd-row"><span>' + r.label + '</span><span class="bd-cost">' + fmt(r.cost) + '/mo</span></div>';
+      }).join('');
+    } else {
+      bd.classList.remove('visible');
+    }
   }
 
-  // Logo already embedded via src attribute
+  window.addEventListener('DOMContentLoaded', function() {
+    var countEl  = document.getElementById('clientCount');
+    var sliderEl = document.getElementById('clientSlider');
+    var btnUp    = document.getElementById('btn-up');
+    var btnDown  = document.getElementById('btn-down');
 
-  calculate();
+    // Slider -> number input
+    function onSliderMove() {
+      countEl.value = sliderEl.value;
+      calculate();
+    }
+    sliderEl.addEventListener('input',     onSliderMove);
+    sliderEl.addEventListener('change',    onSliderMove);
+    sliderEl.addEventListener('touchmove', onSliderMove, { passive: true });
+    sliderEl.addEventListener('touchend',  onSliderMove, { passive: true });
+
+    // Number input -> slider
+    countEl.addEventListener('input', function() {
+      var v = parseInt(countEl.value) || 1;
+      sliderEl.value = Math.min(v, 300);
+      calculate();
+    });
+
+    // Steppers
+    btnUp.addEventListener('click', function() {
+      countEl.value = Math.max(1, (parseInt(countEl.value) || 0) + 1);
+      sliderEl.value = Math.min(parseInt(countEl.value), 300);
+      calculate();
+    });
+    btnDown.addEventListener('click', function() {
+      countEl.value = Math.max(1, (parseInt(countEl.value) || 0) - 1);
+      sliderEl.value = Math.min(parseInt(countEl.value), 300);
+      calculate();
+    });
+
+    calculate();
+  });
 </script>
 </body>
 </html>
